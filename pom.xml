@@ -8,15 +8,12 @@
     <artifactId>Users</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-<<<<<<< HEAD
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
 
-=======
->>>>>>> 79cc75d4440763483c058fb97ce4351c9c0e23f1
     <dependencies>
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -24,8 +21,4 @@
             <version>42.2.16</version>
         </dependency>
     </dependencies>
-<<<<<<< HEAD
 </project>
-=======
-</project>
->>>>>>> 79cc75d4440763483c058fb97ce4351c9c0e23f1

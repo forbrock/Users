@@ -5,10 +5,7 @@ import com.jdbc.model.User;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-<<<<<<< HEAD
 import java.util.List;
-=======
->>>>>>> 79cc75d4440763483c058fb97ce4351c9c0e23f1
 
 public class UserDao implements CrudDao {
     private static final String DB_URL = "jdbc:postgresql://localhost:5432/users_db";
@@ -16,11 +13,7 @@ public class UserDao implements CrudDao {
     private static final String PASS = "postgres";
 
     private static Connection connection;
-<<<<<<< HEAD
     private List<User> users;
-=======
-    private ArrayList<User> users;
->>>>>>> 79cc75d4440763483c058fb97ce4351c9c0e23f1
 
     public UserDao() {
         try {
@@ -36,11 +29,7 @@ public class UserDao implements CrudDao {
         }
     }
 
-<<<<<<< HEAD
     public List<User> getUsers() {
-=======
-    public ArrayList<User> getUsers() {
->>>>>>> 79cc75d4440763483c058fb97ce4351c9c0e23f1
         return users;
     }
 
