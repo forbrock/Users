@@ -3,92 +3,150 @@ package com.jdbc.dao;
 import com.jdbc.model.User;
 
 import java.sql.*;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDao implements CrudDao {
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/users_db";
-    private static final String USER = "postgres";
-    private static final String PASS = "postgres";
-
-    private static Connection connection;
-    private List<User> users;
-
+public class UserDao implements Dao {
     public UserDao() {
-        try {
-            connection = DriverManager.getConnection(DB_URL, USER, PASS);
-            if (connection != null) {
-                System.out.println("Connected to user_db");
-            } else {
-                throw new SQLException();
+    }
+
+    private User queryExecuteHelper(String query) {
+        User user = null;
+        try (Connection conn = getConnection();
+             Statement statement = conn.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
+
+            if (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                LocalDate birth = resultSet.getObject("birth", LocalDate.class);
+                String email = resultSet.getString("email");
+
+                user = new User(id, name, birth, email);
             }
         } catch (SQLException e) {
-            System.err.println("Failed to connect");
             e.printStackTrace();
         }
+        return user;
     }
 
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public Connection getConnection() {
+    private Connection getConnection() {
+        Connection connection = null;
+        try {
+            connection = DBCPDataSource.getConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return connection;
     }
 
     @Override
-    public void addUser(User user) {
-        try (Statement statement = connection.createStatement()) {
-            String query = String.format("INSERT INTO users (name, birth, email) VALUES ('%s', '%s', '%s')",
-                    user.getName(), new SimpleDateFormat("d/MM/yyyy").format(user.getBirth()), user.getEmail());
-            int insertedRowsNumber = statement.executeUpdate(query);
-            if (insertedRowsNumber > 0) {
-                System.out.println("The entry added successfully");
-            } else {
-                throw new SQLException();
-            }
+    public boolean save(User userObject) {
+        boolean rowInserted = false;
+        String query = "INSERT INTO users (name, birth, email) VALUES (?, ?, ?)";
+        try (Connection conn = getConnection();
+             PreparedStatement statement = conn.prepareStatement(query)) {
+            statement.setString(1, userObject.getName());
+            statement.setObject(2, userObject.getBirth());
+            statement.setString(3, userObject.getEmail());
+
+            rowInserted = statement.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return rowInserted;
     }
 
     @Override
-    public void findUser(String query) {
-        if (users == null) {
-            users = new ArrayList<>();
+    public User find(SearchOption searchOption, Object criterion) {
+        User user = null;
+        String queryParameter = "";
+        String query = "";
+        switch (searchOption) {
+            case BY_ID:
+                queryParameter = "id";
+                query = String.format("SELECT * FROM users WHERE %s = %s",
+                        queryParameter, String.valueOf(criterion));
+                user = queryExecuteHelper(query);
+                break;
+            case BY_NAME:
+                queryParameter = "name";
+                query = String.format("SELECT * FROM users WHERE %s = '%s'",
+                        queryParameter, String.valueOf(criterion));
+                user = queryExecuteHelper(query);
+                break;
+            case BY_BIRTH:
+                queryParameter = "birth";
+                query = String.format("SELECT * FROM users WHERE %s = '%s'",
+                        queryParameter, String.valueOf(criterion));
+                user = queryExecuteHelper(query);
+                break;
+            case BY_EMAIL:
+                queryParameter = "email";
+                query = String.format("SELECT * FROM users WHERE %s = '%s'",
+                        queryParameter, String.valueOf(criterion));
+                user = queryExecuteHelper(query);
+                break;
+            default:
+                System.out.println("Wrong option or criterion");
+                break;
         }
-        try (Statement statement = connection.createStatement();
+        return user;
+    }
+
+    @Override
+    public List<User> findAll() {
+        List<User> list = new ArrayList<>();
+        String query = "SELECT id, name, birth, email FROM users";
+        try (Connection conn = getConnection();
+             Statement statement = conn.createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
+
             while (resultSet.next()) {
-                User user = new User();
-                user.setId(resultSet.getInt("id"));
-                user.setName(resultSet.getString("name"));
-                user.setBirth(resultSet.getDate("birth"));
-                user.setEmail(resultSet.getString("email"));
-                users.add(user);
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                LocalDate birth = resultSet.getObject("birth", LocalDate.class);
+                String email = resultSet.getString("email");
+
+                User user = new User(id, name, birth, email);
+                list.add(user);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return list;
     }
 
     @Override
-    public void updateUser(int id, User newUser) {
-        try (Statement statement = connection.createStatement()) {
-            String query = String.format("UPDATE users SET name='%s', birth='%s', email='%s' WHERE id=%d",
-                            newUser.getName(), newUser.getBirth(), newUser.getEmail(), id);
-            int isUpdated = statement.executeUpdate(query);
-            if (isUpdated > 0) {
-                System.out.println("Raw updated");
-            }
+    public boolean update(User userObject) {
+        boolean rowUpdated = false;
+        String query = "UPDATE users SET name = ?, birth = ?, email = ? WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement statement = conn.prepareStatement(query)) {
+            statement.setString(1, userObject.getName());
+            statement.setObject(2, userObject.getBirth());
+            statement.setString(3, userObject.getEmail());
+            statement.setInt(4, userObject.getId());
+
+            rowUpdated = statement.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return rowUpdated;
     }
 
     @Override
-    public void removeUser(int id) {
-
+    public boolean delete(User userObject) {
+        boolean rowDeleted = false;
+        String query = "DELETE FROM users WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement statement = conn.prepareStatement(query)) {
+            statement.setInt(1, userObject.getId());
+            rowDeleted = statement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rowDeleted;
     }
 }

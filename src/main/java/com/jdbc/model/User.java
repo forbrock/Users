@@ -1,36 +1,34 @@
 package com.jdbc.model;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
 import java.util.Locale;
 
 public class User {
     private int id;
     private String name;
-    private Date birth;
+    private LocalDate birth;
     private String email;
-    SimpleDateFormat sdf = new SimpleDateFormat("d/MM/yyyy");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
 
     public User() {
     }
 
+    public User(int id, String name, LocalDate birth, String email) {
+        this.id = id;
+        this.name = name;
+        this.birth = birth;
+        this.email = email;
+    }
+
     public User(String name, String birth, String email) {
         this.name = name;
-        try {
-            this.birth = sdf.parse(birth);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        this.birth = LocalDate.parse(birth, formatter);
         this.email = email;
     }
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -41,20 +39,12 @@ public class User {
         this.name = name;
     }
 
-    public Date getBirth() {
+    public LocalDate getBirth() {
         return birth;
     }
 
-    public void setBirth(Date date) {
-        this.birth = date;
-    }
-
-    public void setBirth(String date) {
-        try {
-            this.birth = sdf.parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+    public void setBirth(String birth) {
+        this.birth = LocalDate.parse(birth, formatter);
     }
 
     public String getEmail() {
@@ -70,7 +60,7 @@ public class User {
         return getClass().getSimpleName() + "{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
-                ", birth=" + sdf.format(birth) +
+                ", birth=" + birth.format(formatter) +
                 ", email='" + email + '\'' +
                 '}';
     }
