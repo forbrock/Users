@@ -17,7 +17,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AppTest {
+public class UserDaoTest {
     private static UserDao userDao = new UserDao(DBType.H2_INMEMORY_DB);
     private User expectedUser = new User("Hippo", "27/03/1999", "hippo@somemail.com");
 
