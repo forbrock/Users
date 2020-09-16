@@ -39,6 +39,22 @@ public class UserDao implements Dao {
         return user;
     }
 
+    private String createQuery(SearchOption option, Object criterion) {
+        String selectUser = "SELECT * FROM users WHERE %s = %s";
+        switch (option) {
+            case BY_ID:
+                return String.format(selectUser, "id", criterion);
+            case BY_NAME:
+                return String.format(selectUser, "name", criterion);
+            case BY_BIRTH:
+                return String.format(selectUser, "birth", criterion);
+            case BY_EMAIL:
+                return String.format(selectUser, "email", criterion);
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+
     public Connection getConnection() {
         Connection connection = null;
         try {
@@ -68,39 +84,8 @@ public class UserDao implements Dao {
 
     @Override
     public User find(SearchOption searchOption, Object criterion) {
-        User user = null;
-        String queryParameter = "";
-        String query = "";
-        switch (searchOption) {
-            case BY_ID:
-                queryParameter = "id";
-                query = String.format("SELECT * FROM users WHERE %s = %s",
-                        queryParameter, String.valueOf(criterion));
-                user = queryExecuteHelper(query);
-                break;
-            case BY_NAME:
-                queryParameter = "name";
-                query = String.format("SELECT * FROM users WHERE %s = '%s'",
-                        queryParameter, String.valueOf(criterion));
-                user = queryExecuteHelper(query);
-                break;
-            case BY_BIRTH:
-                queryParameter = "birth";
-                query = String.format("SELECT * FROM users WHERE %s = '%s'",
-                        queryParameter, String.valueOf(criterion));
-                user = queryExecuteHelper(query);
-                break;
-            case BY_EMAIL:
-                queryParameter = "email";
-                query = String.format("SELECT * FROM users WHERE %s = '%s'",
-                        queryParameter, String.valueOf(criterion));
-                user = queryExecuteHelper(query);
-                break;
-            default:
-                System.out.println("Wrong option or criterion");
-                break;
-        }
-        return user;
+        String query = createQuery(searchOption, criterion);
+        return queryExecuteHelper(query);
     }
 
     @Override

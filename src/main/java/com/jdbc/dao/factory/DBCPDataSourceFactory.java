@@ -3,7 +3,7 @@ package com.jdbc.dao.factory;
 public class DBCPDataSourceFactory {
 
     public DataSource getDBCPObject(DBType type) {
-        if (type == null) throw new IllegalArgumentException("Wrong doughnut type: " + null);
+        if (type == null) throw new IllegalArgumentException("Wrong database type: " + null);
 
         switch (type) {
             case POSTGRESQL: return new PostgresDataSource();
