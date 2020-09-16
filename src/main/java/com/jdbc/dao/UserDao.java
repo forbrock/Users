@@ -40,7 +40,7 @@ public class UserDao implements Dao {
     }
 
     private String createQuery(SearchOption option, Object criterion) {
-        String selectUser = "SELECT * FROM users WHERE %s = %s";
+        String selectUser = "SELECT * FROM users WHERE %s = '%s'";
         switch (option) {
             case BY_ID:
                 return String.format(selectUser, "id", criterion);
