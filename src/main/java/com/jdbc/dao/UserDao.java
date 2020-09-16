@@ -1,5 +1,8 @@
 package com.jdbc.dao;
 
+import com.jdbc.dao.factory.DBCPDataSourceFactory;
+import com.jdbc.dao.factory.DBType;
+import com.jdbc.dao.factory.DataSource;
 import com.jdbc.model.User;
 
 import java.sql.*;
@@ -8,7 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDao implements Dao {
-    public UserDao() {
+    DataSource dataSource;
+
+    public UserDao(DBType type) {
+        DBCPDataSourceFactory dbcpFactory = new DBCPDataSourceFactory();
+        dataSource = dbcpFactory.getDBCPObject(type);
     }
 
     private User queryExecuteHelper(String query) {
@@ -16,6 +23,7 @@ public class UserDao implements Dao {
         try (Connection conn = getConnection();
              Statement statement = conn.createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
+            conn.setReadOnly(true);
 
             if (resultSet.next()) {
                 int id = resultSet.getInt("id");
@@ -31,10 +39,10 @@ public class UserDao implements Dao {
         return user;
     }
 
-    private Connection getConnection() {
+    public Connection getConnection() {
         Connection connection = null;
         try {
-            connection = DBCPDataSource.getConnection();
+            connection = dataSource.getConnection();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -102,6 +110,7 @@ public class UserDao implements Dao {
         try (Connection conn = getConnection();
              Statement statement = conn.createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
+            conn.setReadOnly(true);
 
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
@@ -146,6 +155,8 @@ public class UserDao implements Dao {
             rowDeleted = statement.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (NullPointerException e) {
+            return false;
         }
         return rowDeleted;
     }

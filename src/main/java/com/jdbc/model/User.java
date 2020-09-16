@@ -2,7 +2,6 @@ package com.jdbc.model;
 
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDate;
-import java.util.Locale;
 
 public class User {
     private int id;
@@ -63,5 +62,25 @@ public class User {
                 ", birth=" + birth.format(formatter) +
                 ", email='" + email + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        if (!name.equals(user.name)) return false;
+        if (!birth.equals(user.birth)) return false;
+        return email.equals(user.email);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + birth.hashCode();
+        result = 31 * result + email.hashCode();
+        return result;
     }
 }
