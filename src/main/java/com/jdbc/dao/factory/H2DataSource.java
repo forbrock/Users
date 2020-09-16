@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class H2DataSource implements DataSource {
-    String path = "src/test/resources/postgresqlTest.properties";
+    String path = "src/test/resources/in-memorydb.properties";
     private BasicDataSource ds = new BasicDataSource();
 
     public Connection getConnection() throws SQLException {
