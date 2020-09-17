@@ -5,6 +5,8 @@ import com.jdbc.dao.UserDao;
 import com.jdbc.dao.factory.DBType;
 import com.jdbc.model.User;
 import org.junit.jupiter.api.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -15,6 +17,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserDaoTest {
+    private static final Logger logger = LoggerFactory.getLogger(UserDaoTest.class);
     private static UserDao userDao = new UserDao(DBType.H2_INMEMORY_DB);
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
 
@@ -25,7 +28,7 @@ public class UserDaoTest {
              Statement statement = connection.createStatement()) {
             statement.executeUpdate(query);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Something went wrong", e);
         }
     }
 
@@ -41,7 +44,7 @@ public class UserDaoTest {
              Statement statement = connection.createStatement()) {
             statement.executeUpdate(query);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Something went wrong", e);
         }
     }
 
@@ -68,7 +71,7 @@ public class UserDaoTest {
 
             statement.executeBatch();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Something went wrong", e);
         }
     }
 

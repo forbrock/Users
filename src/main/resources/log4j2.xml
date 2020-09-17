@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Properties>
+        <Property name="filename">file://d:/java_code/users/src/main/logs/AppLog.log</Property>
+    </Properties>
+    <Appenders>
+        <!-- console appender -->
+        <Console name="LogToConsole" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5p %logger{36} - %m%n"/>
+        </Console>
+
+        <!-- file appender -->
+        <File name="LogToFile" fileName="./src/main/logs/AppLog.log" advertise="true">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5p %logger{36} - %m%n"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Logger name="console" level="debug" additivity="false">
+            <AppenderRef ref="LogToConsole"/>
+        </Logger>
+        <Logger name="file" level="debug" additivity="false">
+            <AppenderRef ref="LogToFile"/>
+        </Logger>
+        <Root level="debug">
+            <AppenderRef ref="LogToConsole"/>
+            <AppenderRef ref="LogToFile"/>
+        </Root>
+    </Loggers>
+</Configuration>

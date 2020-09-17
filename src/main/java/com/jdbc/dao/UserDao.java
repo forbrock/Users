@@ -4,6 +4,8 @@ import com.jdbc.dao.factory.DBCPDataSourceFactory;
 import com.jdbc.dao.factory.DBType;
 import com.jdbc.dao.factory.DataSource;
 import com.jdbc.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -11,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDao implements Dao {
+    private static final Logger logger = LoggerFactory.getLogger(UserDao.class);
     DataSource dataSource;
 
     public UserDao(DBType type) {
@@ -34,7 +37,9 @@ public class UserDao implements Dao {
                 user = new User(id, name, birth, email);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Something went wrong", e);
+        } catch (NullPointerException e) {
+            logger.error(e.getMessage(), e);
         }
         return user;
     }
@@ -51,6 +56,7 @@ public class UserDao implements Dao {
             case BY_EMAIL:
                 return String.format(selectUser, "email", criterion);
             default:
+                logger.error("Wrong choice during query creation");
                 throw new IllegalArgumentException();
         }
     }
@@ -60,7 +66,7 @@ public class UserDao implements Dao {
         try {
             connection = dataSource.getConnection();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Connection isn't established", e);
         }
         return connection;
     }
@@ -77,7 +83,7 @@ public class UserDao implements Dao {
 
             rowInserted = statement.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Something went wrong", e);
         }
         return rowInserted;
     }
@@ -107,7 +113,7 @@ public class UserDao implements Dao {
                 list.add(user);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Something went wrong", e);
         }
         return list;
     }
@@ -125,7 +131,7 @@ public class UserDao implements Dao {
 
             rowUpdated = statement.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Something went wrong", e);
         }
         return rowUpdated;
     }
@@ -139,8 +145,9 @@ public class UserDao implements Dao {
             statement.setInt(1, id);
             rowDeleted = statement.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Something went wrong", e);
         } catch (NullPointerException e) {
+            logger.info("Nothing to remove, id {} doesn't exist", id);
             return false;
         }
         return rowDeleted;

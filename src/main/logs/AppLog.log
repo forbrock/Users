@@ -1,0 +1,5 @@
+2020-09-17 22:43:29 [main] ERROR com.jdbc.dao.UserDao - null
+java.lang.NullPointerException: null
+	at com.jdbc.dao.UserDao.queryExecuteHelper(UserDao.java:38) [classes/:?]
+	at com.jdbc.dao.UserDao.find(UserDao.java:95) [classes/:?]
+	at com.jdbc.App.main(App.java:16) [classes/:?]
