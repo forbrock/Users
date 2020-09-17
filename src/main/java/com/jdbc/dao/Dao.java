@@ -10,5 +10,5 @@ public interface Dao {
     User find(SearchOption searchOption, Object criterion) throws SQLException;
     List<User> findAll() throws SQLException;
     boolean update(User userObject) throws SQLException;
-    boolean delete(User userObject) throws SQLException;
+    boolean delete(int id) throws SQLException;
 }

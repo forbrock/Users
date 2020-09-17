@@ -131,12 +131,12 @@ public class UserDao implements Dao {
     }
 
     @Override
-    public boolean delete(User userObject) {
+    public boolean delete(int id) {
         boolean rowDeleted = false;
         String query = "DELETE FROM users WHERE id = ?";
         try (Connection conn = getConnection();
              PreparedStatement statement = conn.prepareStatement(query)) {
-            statement.setInt(1, userObject.getId());
+            statement.setInt(1, id);
             rowDeleted = statement.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();

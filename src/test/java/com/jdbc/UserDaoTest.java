@@ -74,7 +74,6 @@ public class UserDaoTest {
 
     @Test
     public void findByIdTest() {
-        userDao.findAll().forEach(System.out::println);
         User expectedUser = new User(3,"Jorik",
                 LocalDate.parse("01/01/2000", formatter), "jorik@somemail.com");
         User actualUser = userDao.find(SearchOption.BY_ID, expectedUser.getId());
@@ -107,8 +106,8 @@ public class UserDaoTest {
 
     @Test
     public void findAllTest() {
-        List<User> expectedUsers = new ArrayList<>();
         List<User> actualUsers = userDao.findAll();
+        List<User> expectedUsers = new ArrayList<>();
         expectedUsers.add(new User(1,"Ivanka",
                 LocalDate.parse("30/09/1997", formatter), "ivanka@somemail.com"));
         expectedUsers.add(new User(3,"Petrushka",
@@ -124,7 +123,7 @@ public class UserDaoTest {
         User expectedUser = new User(4, "Hippo",
                 LocalDate.parse("27/03/1999", formatter), "hippo@somemail.com");
         userDao.save(expectedUser);
-        User actualUser = userDao.find(SearchOption.BY_ID, 4);
+        User actualUser = userDao.find(SearchOption.BY_ID, expectedUser.getId());
         assertEquals(expectedUser, actualUser);
     }
 
@@ -141,8 +140,9 @@ public class UserDaoTest {
     public void deleteTest() {
         User expectedUser = new User(1, "Ivanka",
                 LocalDate.parse("30/09/1997", formatter), "ivanka@somemail.com");
-        userDao.delete(expectedUser);
+        boolean isDeleted = userDao.delete(expectedUser.getId());
         User actualUser = userDao.find(SearchOption.BY_ID, expectedUser.getId());
         assertNotEquals(expectedUser, actualUser);
+        assertTrue(isDeleted);
     }
 }
