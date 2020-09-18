@@ -32,7 +32,7 @@ public class UserDaoTest {
                 "birth DATE NOT NULL," +
                 "email VARCHAR(64) NOT NULL," +
                 "PRIMARY KEY (id));";
-        try (Connection connection = userDao.getConnection();
+        try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {
             statement.executeUpdate(query);
         } catch (SQLException e) {
@@ -43,7 +43,7 @@ public class UserDaoTest {
     @BeforeEach
     public void setTableData() {
         String query = "INSERT INTO users (name, birth, email) VALUES (?, ?, ?)";
-        try (Connection connection = userDao.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, "Ivanka");
@@ -70,7 +70,7 @@ public class UserDaoTest {
     @AfterEach
     public void dropTable() {
         String query = "DROP TABLE IF EXISTS users";
-        try (Connection connection = userDao.getConnection();
+        try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {
             statement.executeUpdate(query);
         } catch (SQLException e) {

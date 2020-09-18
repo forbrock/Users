@@ -20,19 +20,9 @@ public class UserDao implements Dao<User> {
         this.dataSource = dataSource;
     }
 
-    public Connection getConnection() {
-        Connection connection = null;
-        try {
-            connection = dataSource.getConnection();
-        } catch (SQLException e) {
-            logger.error("Connection isn't established", e);
-        }
-        return connection;
-    }
-
     private User queryExecuteHelper(String query) {
         User user = null;
-        try (Connection conn = getConnection();
+        try (Connection conn = dataSource.getConnection();
              Statement statement = conn.createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
             conn.setReadOnly(true);
@@ -74,7 +64,7 @@ public class UserDao implements Dao<User> {
     public boolean save(User userObject) {
         boolean rowInserted = false;
         String query = "INSERT INTO users (name, birth, email) VALUES (?, ?, ?)";
-        try (Connection conn = getConnection();
+        try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setString(1, userObject.getName());
             statement.setObject(2, userObject.getBirth());
@@ -97,7 +87,7 @@ public class UserDao implements Dao<User> {
     public List<User> findAll() {
         List<User> list = new ArrayList<>();
         String query = "SELECT id, name, birth, email FROM users";
-        try (Connection conn = getConnection();
+        try (Connection conn = dataSource.getConnection();
              Statement statement = conn.createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
             conn.setReadOnly(true);
@@ -121,7 +111,7 @@ public class UserDao implements Dao<User> {
     public boolean update(User userObject) {
         boolean rowUpdated = false;
         String query = "UPDATE users SET name = ?, birth = ?, email = ? WHERE id = ?";
-        try (Connection conn = getConnection();
+        try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setString(1, userObject.getName());
             statement.setObject(2, userObject.getBirth());
@@ -139,7 +129,7 @@ public class UserDao implements Dao<User> {
     public boolean delete(int id) {
         boolean rowDeleted = false;
         String query = "DELETE FROM users WHERE id = ?";
-        try (Connection conn = getConnection();
+        try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setInt(1, id);
             rowDeleted = statement.executeUpdate() > 0;
