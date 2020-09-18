@@ -1,14 +1,22 @@
 package com.jdbc.dao.factory;
 
-public class DBCPDataSourceFactory {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-    public DataSource getDBCPObject(DBType type) {
-        if (type == null) throw new IllegalArgumentException("Wrong database type: " + null);
+public class DBCPDataSourceFactory {
+    private static final Logger logger = LoggerFactory.getLogger(DBCPDataSourceFactory.class);
+
+    public static DataSource getDBCPObject(DBType type) {
+        if (type == null) {
+            logger.error("No arguments passed, 'DBType = null'");
+            throw new IllegalArgumentException("No arguments passed: " + null);
+        }
 
         switch (type) {
             case POSTGRESQL: return new PostgresDataSource();
             case H2_INMEMORY_DB: return new H2DataSource();
         }
+        logger.error("Wrong DBType passed: '{}'", type);
         return null;
     }
 }

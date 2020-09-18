@@ -17,8 +17,7 @@ public class UserDao implements Dao {
     DataSource dataSource;
 
     public UserDao(DBType type) {
-        DBCPDataSourceFactory dbcpFactory = new DBCPDataSourceFactory();
-        dataSource = dbcpFactory.getDBCPObject(type);
+        dataSource = DBCPDataSourceFactory.getDBCPObject(type);
     }
 
     private User queryExecuteHelper(String query) {
