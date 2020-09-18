@@ -2,12 +2,14 @@ package com.jdbc;
 
 import com.jdbc.dao.SearchOption;
 import com.jdbc.dao.UserDao;
+import com.jdbc.dao.factory.DBCPDataSourceFactory;
 import com.jdbc.dao.factory.DBType;
 import com.jdbc.model.User;
 import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -17,20 +19,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserDaoTest {
-    private static final Logger logger = LoggerFactory.getLogger(UserDaoTest.class);
-    private static UserDao userDao = new UserDao(DBType.H2_INMEMORY_DB);
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-
-    @BeforeEach
-    public void dropTable() {
-        String query = "DROP TABLE IF EXISTS users";
-        try (Connection connection = userDao.getConnection();
-             Statement statement = connection.createStatement()) {
-            statement.executeUpdate(query);
-        } catch (SQLException e) {
-            logger.error("Something went wrong", e);
-        }
-    }
+    DataSource dataSource = DBCPDataSourceFactory.getDataSource(DBType.H2_INMEMORY_DB);
+    private UserDao userDao = new UserDao(dataSource);
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+    private final Logger logger = LoggerFactory.getLogger(UserDaoTest.class);
 
     @BeforeEach
     public void createTable() {
@@ -70,6 +62,17 @@ public class UserDaoTest {
             statement.addBatch();
 
             statement.executeBatch();
+        } catch (SQLException e) {
+            logger.error("Something went wrong", e);
+        }
+    }
+
+    @AfterEach
+    public void dropTable() {
+        String query = "DROP TABLE IF EXISTS users";
+        try (Connection connection = userDao.getConnection();
+             Statement statement = connection.createStatement()) {
+            statement.executeUpdate(query);
         } catch (SQLException e) {
             logger.error("Something went wrong", e);
         }

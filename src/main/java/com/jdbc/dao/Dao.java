@@ -5,10 +5,10 @@ import com.jdbc.model.User;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface Dao {
-    boolean save(User userObject) throws SQLException;
-    User find(SearchOption searchOption, Object criterion) throws SQLException;
-    List<User> findAll() throws SQLException;
-    boolean update(User userObject) throws SQLException;
+public interface Dao<T> {
+    boolean save(T o) throws SQLException;
+    T find(SearchOption searchOption, Object criterion) throws SQLException;
+    List<T> findAll() throws SQLException;
+    boolean update(T o) throws SQLException;
     boolean delete(int id) throws SQLException;
 }

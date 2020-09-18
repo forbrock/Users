@@ -8,7 +8,7 @@ public class User {
     private String name;
     private LocalDate birth;
     private String email;
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
 
     public User() {
     }

@@ -2,22 +2,32 @@ package com.jdbc.dao;
 
 import com.jdbc.dao.factory.DBCPDataSourceFactory;
 import com.jdbc.dao.factory.DBType;
-import com.jdbc.dao.factory.DataSource;
 import com.jdbc.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDao implements Dao {
+public class UserDao implements Dao<User> {
     private static final Logger logger = LoggerFactory.getLogger(UserDao.class);
     DataSource dataSource;
 
-    public UserDao(DBType type) {
-        dataSource = DBCPDataSourceFactory.getDBCPObject(type);
+    public UserDao(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    public Connection getConnection() {
+        Connection connection = null;
+        try {
+            connection = dataSource.getConnection();
+        } catch (SQLException e) {
+            logger.error("Connection isn't established", e);
+        }
+        return connection;
     }
 
     private User queryExecuteHelper(String query) {
@@ -58,16 +68,6 @@ public class UserDao implements Dao {
                 logger.error("Wrong choice during query creation");
                 throw new IllegalArgumentException();
         }
-    }
-
-    public Connection getConnection() {
-        Connection connection = null;
-        try {
-            connection = dataSource.getConnection();
-        } catch (SQLException e) {
-            logger.error("Connection isn't established", e);
-        }
-        return connection;
     }
 
     @Override
