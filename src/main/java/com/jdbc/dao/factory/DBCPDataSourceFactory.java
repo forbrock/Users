@@ -13,11 +13,6 @@ public class DBCPDataSourceFactory {
     private static final Logger logger = LoggerFactory.getLogger(DBCPDataSourceFactory.class);
 
     public static BasicDataSource getDataSource(DBType type) {
-        if (type == null) {
-            logger.error("No arguments passed, 'DBType = null'");
-            throw new IllegalArgumentException("No arguments passed: " + null);
-        }
-
         basicDataSource.setMinIdle(1);
         basicDataSource.setMaxIdle(3);
         basicDataSource.setMaxOpenPreparedStatements(30);

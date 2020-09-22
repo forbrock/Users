@@ -1,7 +1,5 @@
 package com.jdbc.dao;
 
-import com.jdbc.model.User;
-
 import java.sql.SQLException;
 import java.util.List;
 

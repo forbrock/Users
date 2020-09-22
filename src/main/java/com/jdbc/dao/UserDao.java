@@ -11,10 +11,12 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 public class UserDao implements Dao<User> {
     private static final Logger logger = LoggerFactory.getLogger(UserDao.class);
-    DataSource dataSource;
+    private DataSource dataSource;
 
     public UserDao(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -37,8 +39,6 @@ public class UserDao implements Dao<User> {
             }
         } catch (SQLException e) {
             logger.error("Something went wrong", e);
-        } catch (NullPointerException e) {
-            logger.error(e.getMessage(), e);
         }
         return user;
     }
@@ -80,7 +80,8 @@ public class UserDao implements Dao<User> {
     @Override
     public User find(SearchOption searchOption, Object criterion) {
         String query = createQuery(searchOption, criterion);
-        return queryExecuteHelper(query);
+        return Optional.ofNullable(queryExecuteHelper(query))
+                .orElseThrow(NoSuchElementException::new);
     }
 
     @Override
