@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -136,7 +137,7 @@ public class UserDaoTest {
     @Test
     public void updateTest() {
         User expectedUser = new User(1, "Ivanka",
-                LocalDate.parse("30/09/1997", formatter), "ivanka@somemail.com");
+                LocalDate.parse("30/08/1997", formatter), "ivanka@somemail.com");
         userDao.update(expectedUser);
         User actualUser = userDao.find(SearchOption.BY_ID, expectedUser.getId());
         assertEquals(expectedUser, actualUser);
@@ -147,8 +148,8 @@ public class UserDaoTest {
         User expectedUser = new User(1, "Ivanka",
                 LocalDate.parse("30/09/1997", formatter), "ivanka@somemail.com");
         boolean isDeleted = userDao.delete(expectedUser.getId());
-        User actualUser = userDao.find(SearchOption.BY_ID, expectedUser.getId());
-        assertNotEquals(expectedUser, actualUser);
+        assertThrows(NoSuchElementException.class,
+                () -> userDao.find(SearchOption.BY_ID, expectedUser.getId()));
         assertTrue(isDeleted);
     }
 }

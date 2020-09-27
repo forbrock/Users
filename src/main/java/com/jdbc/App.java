@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
+import java.util.NoSuchElementException;
 
 public class App {
     private static final Logger logger = LoggerFactory.getLogger(App.class);
@@ -15,8 +16,13 @@ public class App {
     public static void main(String[] args) {
         DataSource dataSource = DBCPDataSourceFactory.getDataSource(DBType.POSTGRESQL);
         UserDao userDao = new UserDao(dataSource);
+        try {
 //        userDao.findAll().forEach(System.out::println);
 //        System.out.println(userDao.delete(userDao.find(SearchOption.BY_NAME, "Hippo")));
-//        System.out.println(userDao.find(SearchOption.BY_ID, 6));
+            System.out.println(userDao.find(SearchOption.BY_ID, 3));
+        } catch (NoSuchElementException e) {
+            String message = "Database doesn't contain this entry";
+            logger.info(message);
+        }
     }
 }
