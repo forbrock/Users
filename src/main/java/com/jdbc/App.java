@@ -17,9 +17,10 @@ public class App {
         DataSource dataSource = DBCPDataSourceFactory.getDataSource(DBType.POSTGRESQL);
         UserDao userDao = new UserDao(dataSource);
         try {
-//        userDao.findAll().forEach(System.out::println);
-//        System.out.println(userDao.delete(userDao.find(SearchOption.BY_NAME, "Hippo")));
-            System.out.println(userDao.find(SearchOption.BY_ID, 3));
+//            userDao.findAll().forEach(System.out::println);
+//            System.out.println(userDao.delete(userDao.find(SearchOption.BY_NAME, "Hippo")));
+//            System.out.println(userDao.find(SearchOption.BY_ID, 3));
+//            System.out.println(userDao.delete(44));
         } catch (NoSuchElementException e) {
             String message = "Database doesn't contain this entry";
             logger.info(message);

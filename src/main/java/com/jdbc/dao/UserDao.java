@@ -136,9 +136,6 @@ public class UserDao implements Dao<User> {
             rowDeleted = statement.executeUpdate() > 0;
         } catch (SQLException e) {
             logger.error("Something went wrong", e);
-        } catch (NullPointerException e) {
-            logger.info("Nothing to remove, id {} doesn't exist", id);
-            return false;
         }
         return rowDeleted;
     }
