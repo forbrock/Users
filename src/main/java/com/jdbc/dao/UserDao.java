@@ -1,7 +1,5 @@
 package com.jdbc.dao;
 
-import com.jdbc.dao.factory.DBCPDataSourceFactory;
-import com.jdbc.dao.factory.DBType;
 import com.jdbc.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
